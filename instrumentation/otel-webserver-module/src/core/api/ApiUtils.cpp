@@ -80,8 +80,6 @@ OTEL_SDK_STATUS_CODE ApiUtils::init_boilerplate(OTEL_SDK_ENV_RECORD* envIn, unsi
                     / boost::filesystem::path("opentelemetry_sdk_log4cxx.xml");
         }
 
-        std::cerr << "LE CHEMIN: " << logConfigPath << std::endl;
-
         boost::system::error_code ec;
         if (!boost::filesystem::exists(logConfigPath, ec)) // no throw version of exists()
         {
@@ -170,14 +168,12 @@ OTEL_SDK_STATUS_CODE ApiUtils::ReadFromPassedSettings(
 {
     PassedEnvinronmentReader env;
 
-    std::cerr << "PRERRERERERRE: " << std::endl;
     OTEL_SDK_STATUS_CODE res = env.Init(envIn, numberOfRecords);
     if(OTEL_ISFAIL(res))
     {
         return res;
     }
 
-    std::cerr << "MOMOMMOMOMO: " << std::endl;
     return ReadSettingsFromReader(env, tenantConfig, spanNamer);
 }
 
@@ -215,8 +211,6 @@ OTEL_SDK_STATUS_CODE ApiUtils::ReadSettingsFromReader(
 
     OTEL_SDK_STATUS_CODE status;
 
-    std::cerr << "ENTERED: " << std::endl;
-
     status = reader.ReadMandatory(
         std::string(OTEL_SDK_ENV_SERVICE_NAMESPACE), serviceNamespace);
     if(OTEL_ISFAIL(status))
@@ -227,42 +221,30 @@ OTEL_SDK_STATUS_CODE ApiUtils::ReadSettingsFromReader(
     if(OTEL_ISFAIL(status))
         return status;
 
-     std::cerr << "FIRST: " << std::endl;
-
     status = reader.ReadMandatory(
         std::string(OTEL_SDK_ENV_SERVICE_INSTANCE_ID), serviceInstanceId);
     if(OTEL_ISFAIL(status))
         return status;
     
-     std::cerr << "FIRST 2: " << std::endl;
-
     status = reader.ReadOptional(
         std::string(OTEL_SDK_ENV_OTEL_EXPORTER_TYPE), otelExporterType);
     if(OTEL_ISFAIL(status))
         return status;
-
-     std::cerr << "FIRST 3: " << std::endl;
 
     status = reader.ReadMandatory(
         std::string(OTEL_SDK_ENV_OTEL_EXPORTER_ENDPOINT), otelExporterEndpoint);
     if(OTEL_ISFAIL(status))
         return status;
 
-     std::cerr << "FIRST 4: " << std::endl;
-
     status = ReadOptionalFromReader(
         reader, std::string(OTEL_SDK_ENV_OTEL_SSL_ENABLED), otelSslEnabled);
     if(OTEL_ISFAIL(status))
         return status;
 
-    std::cerr << "FIRST 5: " << std::endl;
-
     status = reader.ReadOptional(
         std::string(OTEL_SDK_ENV_OTEL_SSL_CERTIFICATE_PATH), otelSslCertPath);
     if(OTEL_ISFAIL(status))
         return status;
-
-    std::cerr << "LECTURE juste la: " << std::endl;
 
     status = reader.ReadMandatory(
         std::string(OTEL_SDK_ENV_OTEL_LIBRARY_NAME), otelLibraryName);
@@ -301,17 +283,13 @@ OTEL_SDK_STATUS_CODE ApiUtils::ReadSettingsFromReader(
     reader.ReadOptional(
         std::string(OTEL_SDK_ENV_SEGMENT_PARAMETER), segmentParameter);
 
-
-    std::cerr << "LECTURE otelExporterOtlpHeaders: " << std::endl;
     reader.ReadOptional(
             std::string(OTEL_SDK_ENV_OTEL_EXPORTER_OTLPHEADERS), otelExporterOtlpHeaders);
 
-    std::cerr << "YOUPI: " << std::endl;
     status = reader.ReadOptional(
         std::string(OTEL_SDK_ENV_LOG_CONFIG_PATH), otelLogConfigPath);
     if(OTEL_ISFAIL(status))
         return status;
-    std::cerr << "BOUM: " << std::endl;
 
     tenantConfig.setServiceNamespace(serviceNamespace);
     tenantConfig.setServiceName(serviceName);
@@ -329,8 +307,6 @@ OTEL_SDK_STATUS_CODE ApiUtils::ReadSettingsFromReader(
     tenantConfig.setOtelSslEnabled(otelSslEnabled);
     tenantConfig.setOtelSslCertPath(otelSslCertPath);
     tenantConfig.setOtelLogConfigPath(otelLogConfigPath);
-
-    std::cerr << "SUPRSUPR: " << std::endl;
 
     spanNamer.setSegmentRules(segmentType, segmentParameter);
 
@@ -529,8 +505,6 @@ OTEL_SDK_STATUS_CODE PassedEnvinronmentReader::ReadOptional(
 {
     result.clear();
 
-    std::cerr << "ICI: " << varName << std::endl;
-
     std::map<std::string, std::string>::iterator found = env.find(varName);
     if(found == env.end())
     {
@@ -538,17 +512,12 @@ OTEL_SDK_STATUS_CODE PassedEnvinronmentReader::ReadOptional(
         return OTEL_SUCCESS;
     }
 
-    std::cerr << "LA: " << varName << std::endl;
-
     std::string value = (*found).second;
     if(value.empty())
     {
-        std::cerr << "EMPTY: " << varName << std::endl;
         LOG4CXX_TRACE(ApiUtils::apiLogger, boost::format("Environment variable %1% is non-empty") % varName.c_str());
         return OTEL_SUCCESS;
     }
-
-    std::cerr << "ENCORE LA: " << varName << std::endl;
 
     result = value;
 

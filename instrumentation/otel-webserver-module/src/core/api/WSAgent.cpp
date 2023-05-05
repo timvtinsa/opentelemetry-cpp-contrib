@@ -53,17 +53,12 @@ WSAgent::init(OTEL_SDK_ENV_RECORD* env, unsigned numberOfRecords)
         return res;
     }
 
-    std::cerr << "AVANT init_boilerplate"  << std::endl;
-
     res = mApiUtils->init_boilerplate(env, numberOfRecords);
     if(OTEL_ISFAIL(res))
     {
         apiFuncTraceError(BOOST_CURRENT_FUNCTION, res);
         return(res);
     }
-
-    std::cerr << "APRES init_boilerplate"  << std::endl;
-
 
     // Read all Config passed in env or from environment
     std::shared_ptr<TenantConfig> tenantConfig(std::make_shared<TenantConfig>());
@@ -74,8 +69,6 @@ WSAgent::init(OTEL_SDK_ENV_RECORD* env, unsigned numberOfRecords)
         apiFuncTraceError(BOOST_CURRENT_FUNCTION, res);
         return(res);
     }
-
-    std::cerr << "APRES readConfig"  << std::endl;
 
     // Start the Agent Core.
     if (!mAgentCore->start(tenantConfig, spanNamer, mUserAddedTenant))
