@@ -54,6 +54,7 @@ public:
     const std::string& getOtelSamplerType() const {return otelSamplerType;}
     const bool getOtelSslEnabled() const { return otelSslEnabled; }
     const std::string& getOtelSslCertPath() const { return otelSslCertPath; }
+    const std::string& getOtelLogConfigPath() const { return otelLogConfigPath; }
 
     void setOtelLibraryName(const std::string& name) { this->otelLibraryName = name; }
     void setOtelLibraryVersion(const std::string& version) { this->otelLibraryVersion = version; }
@@ -71,6 +72,7 @@ public:
     void setOtelSamplerType(const std::string& otelSamplerType) { this->otelSamplerType = otelSamplerType; }
     void setOtelSslEnabled(const bool& otelSslEnabled) { this->otelSslEnabled = otelSslEnabled; }
     void setOtelSslCertPath(const std::string& otelSslCertPath) { this->otelSslCertPath = otelSslCertPath; }
+    void setOtelLogConfigPath(const std::string& otelLogConfigPath) { this->otelLogConfigPath = otelLogConfigPath; }
 
 private:
     std::string serviceNamespace;
@@ -94,6 +96,8 @@ private:
     unsigned otelExportTimeoutMillis;
     unsigned otelMaxExportBatchSize;
 
+    std::string otelLogConfigPath;
+    
     //Span Limits(AttributeCountLimit, EventCountLimit, LinkCountLimit, AttributePerEventCountLimit, AttributePerLinkCountLimit
     //: configuration options have not been added for these; as of now they will have their default vaules
 };
@@ -112,6 +116,7 @@ inline std::ostream& operator<< (std::ostream &os, const otel::core::TenantConfi
         << "\n OtelSslEnabled                   " << config.getOtelSslEnabled()
         << "\n OtelSslCertPath                  " << config.getOtelSslCertPath()
         << "\n OtelExportOtlpHeaders            " << config.getOtelExporterOtlpHeaders()
+        << "\n OtelLogConfigPath                " << config.getOtelLogConfigPath()
         << "";
     return os;
 }

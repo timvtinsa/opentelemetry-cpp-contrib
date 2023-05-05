@@ -321,6 +321,8 @@ bool ApacheHooks::initialize_opentelemetry(const request_rec *r)
     // try to initialize and store a config in the process memory pool
     ApacheTracing::writeTrace(r->server, __func__, "no config stored in the process memory pool");
 
+    std::cerr << "WOWOWOWOWOWO: " << std::endl;
+
     otel_cfg* our_config = ApacheConfigHandlers::getConfig(r);
     if (our_config == NULL)
     {
@@ -345,6 +347,9 @@ bool ApacheHooks::initialize_opentelemetry(const request_rec *r)
                 (OTEL_SDK_ENV_RECORD*) apr_pcalloc(r->pool, CONFIG_COUNT * sizeof(OTEL_SDK_ENV_RECORD));
 
         int ix = 0;
+
+
+        std::cerr << "WAWAWAWAWA: " << std::endl;
 
         // Otel Exporter Type
         env_config[ix].name = OTEL_SDK_ENV_OTEL_EXPORTER_TYPE;
@@ -430,6 +435,14 @@ bool ApacheHooks::initialize_opentelemetry(const request_rec *r)
         env_config[ix].name = OTEL_SDK_ENV_OTEL_EXPORTER_OTLPHEADERS;
         env_config[ix].value = our_config->getOtelExporterOtlpHeaders();
         ++ix;
+
+        // OtelLogConfigPath
+        env_config[ix].name = OTEL_SDK_ENV_LOG_CONFIG_PATH;
+        env_config[ix].value = our_config->getOtelLogConfigPath();
+        ++ix;
+
+        std::cerr << "JUSTE LAAAAAA: " << std::endl;
+
 
         // !!!
         // Remember to update the apr_pcalloc call size if we add another parameter to the input array!

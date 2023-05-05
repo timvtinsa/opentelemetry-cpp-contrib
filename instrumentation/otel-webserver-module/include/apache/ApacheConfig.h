@@ -113,6 +113,9 @@ public:
     const char* getSegmentParameter() { return segmentParameter; }
     int getSegmentParameterInitialized() { return segmentParameter_initialized; }
 
+    const char* getOtelLogConfigPath() { return otelLogConfigPath; }
+    int getOtelLogConfigPathInitialized() { return otelLogConfigPath_initialized; }
+
     friend class ApacheConfigHandlers;
 
 private:
@@ -205,6 +208,8 @@ private:
     int segmentParameter_initialized;   // if FIRST/LAST is choosen above, segment count should be provided.
                                         // if CUSTOM is choosen, segment numbers should be provided such as 2,3
 
+    const char *otelLogConfigPath;       // OPTIONAL: Path to the log configuration file for the OTel SDK
+    int otelLogConfigPath_initialized;
 };
 
 class WebserverContext
@@ -254,6 +259,7 @@ public:
     static const char* otel_set_matchPattern(cmd_parms *cmd, void *conf, const char *arg);
     static const char* otel_set_segmentType(cmd_parms *cmd, void *conf, const char *arg);
     static const char* otel_set_segmentParameter(cmd_parms *cmd, void *conf, const char *arg);
+    static const char* otel_set_otelLogConfigPath(cmd_parms *cmd, void *conf, const char *arg);
     static const char* otel_add_webserver_context(
             cmd_parms* cmd,
             void* conf,

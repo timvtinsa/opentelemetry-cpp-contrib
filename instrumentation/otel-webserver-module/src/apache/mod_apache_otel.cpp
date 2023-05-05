@@ -214,6 +214,12 @@ static const command_rec otel_cmds[] =
             NULL,
             OR_ALL,
             "Specify the segment count or segment numbers that you want to display for Span Creation"),
+    AP_INIT_TAKE1(
+            "otelSdkLogConfigPath",
+            (CMD_HAND_TYPE)ApacheConfigHandlers::otel_set_otelLogConfigPath,
+            NULL,
+            OR_ALL,
+            "Specify the segment count or segment numbers that you want to display for Span Creation"),
     {NULL}
 };
 

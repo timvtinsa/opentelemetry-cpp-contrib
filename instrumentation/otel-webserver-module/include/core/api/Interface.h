@@ -39,7 +39,7 @@ class IApiUtils
 public:
     virtual ~IApiUtils() = default;
 
-    virtual OTEL_SDK_STATUS_CODE init_boilerplate() = 0; // initializes agentLogging
+    virtual OTEL_SDK_STATUS_CODE init_boilerplate(OTEL_SDK_ENV_RECORD* envIn, unsigned numberOfRecords) = 0; // initializes agentLogging
 
     virtual OTEL_SDK_STATUS_CODE ReadFromPassedSettings(
             OTEL_SDK_ENV_RECORD* env,

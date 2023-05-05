@@ -397,6 +397,15 @@ const char* ApacheConfigHandlers::otel_set_segmentParameter(cmd_parms *cmd, void
     return NULL;
 }
 
+// char *otelLogConfigPath
+// int otelLogConfigPath_initialized
+const char* ApacheConfigHandlers::otel_set_otelLogConfigPath(cmd_parms *cmd, void *conf, const char *arg)
+{
+    otel_cfg* cfg = (otel_cfg*) conf;
+    helperChar(cmd, cfg, arg, cfg->otelLogConfigPath, cfg->otelLogConfigPath_initialized, "otel_set_otelLogConfigPath");
+    return NULL;
+}
+
 std::string ApacheConfigHandlers::computeContextName(const otel_cfg* cfg)
 {
     if (!cfg->serviceNamespace_initialized || !cfg->serviceName_initialized || !cfg->serviceInstanceId_initialized)
@@ -539,6 +548,10 @@ void otel_cfg::init()
     //segmentParameter             OPTIONAL:
     segmentParameter = "2";
     segmentParameter_initialized = 0;
+
+    //otelLogConfigPath       OPTIONAL: Path to the log configuration file for the OTel SDK
+    otelLogConfigPath = "";
+    otelLogConfigPath_initialized = 0;
 }
 
 bool otel_cfg::validate(const request_rec *r)
@@ -745,6 +758,11 @@ void* ApacheConfigHandlers::otel_merge_dir_config(apr_pool_t* p, void* parent_co
     merged_config->segmentParameter = nconf->segmentParameter_initialized ? nconf->segmentParameter : pconf->segmentParameter;
     merged_config->segmentParameter_initialized = 1;
 
+    // otelLogConfigPath 
+    merged_config->otelLogConfigPath = nconf->otelLogConfigPath_initialized ?
+            apr_pstrdup(p, nconf->otelLogConfigPath) : apr_pstrdup(p, pconf->otelLogConfigPath);
+    merged_config->otelLogConfigPath_initialized = 1;
+
 
     ApacheTracing::writeTrace(NULL, __func__,
             "(p == %p, parent_conf == %p, newloc_conf == %p)",
@@ -831,6 +849,9 @@ otel_cfg* ApacheConfigHandlers::getProcessConfig(const request_rec* r)
     process_cfg->reportAllInstrumentedModules = our_config->reportAllInstrumentedModules;
     process_cfg->reportAllInstrumentedModules_initialized = our_config->reportAllInstrumentedModules_initialized;
 
+    process_cfg->otelLogConfigPath = apr_pstrdup(r->server->process->pool, our_config->otelLogConfigPath);
+    process_cfg->otelLogConfigPath_initialized = our_config->otelLogConfigPath_initialized;
+
     return process_cfg;
 }
 
@@ -877,6 +898,7 @@ void ApacheConfigHandlers::traceConfig(const request_rec* r, const otel_cfg* cfg
                 "(MaskSmUser=\"%d\")"
                 "(SegmentType=\"%s\")"
                 "(SegmentParameter=\"%s\")"
+                "(OtelLogConfigPath=\"%s\")"
             "}",
             cfg->otelEnabled,
             cfg->otelExporterEndpoint,
@@ -898,5 +920,6 @@ void ApacheConfigHandlers::traceConfig(const request_rec* r, const otel_cfg* cfg
             cfg->maskCookie,
             cfg->maskSmUser,
             cfg->segmentType,
-            cfg->segmentParameter);
+            cfg->segmentParameter,
+            cfg->otelLogConfigPath);
 }

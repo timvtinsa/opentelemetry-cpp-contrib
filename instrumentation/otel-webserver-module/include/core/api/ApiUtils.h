@@ -43,6 +43,10 @@ public:
     virtual OTEL_SDK_STATUS_CODE ReadMandatory(const std::string& varName, std::string& result);
     virtual OTEL_SDK_STATUS_CODE ReadOptional(const std::string& varName, std::string& result);
 
+    std::map<std::string, std::string>& GetEnv() {
+        return env;
+    }
+
 private:
     std::map<std::string, std::string> env;
 };
@@ -58,7 +62,7 @@ public:
     /*
     *   TODO: Following functions will be implemented while doing agent init and term
     */
-    OTEL_SDK_STATUS_CODE init_boilerplate() override; // initializes agentLogging
+    OTEL_SDK_STATUS_CODE init_boilerplate(OTEL_SDK_ENV_RECORD* envIn, unsigned numberOfRecords) override; // initializes agentLogging
 
 
     OTEL_SDK_STATUS_CODE ReadFromPassedSettings(
